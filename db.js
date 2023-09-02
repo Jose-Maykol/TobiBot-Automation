@@ -1,9 +1,10 @@
-import { Client } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const client = new Client({
+const db = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_DATABASE,
@@ -12,13 +13,13 @@ const client = new Client({
   ssl: true,
 });
 
-(async () => {
-  try {
-    await client.connect();
-    console.log('Conectado a la base de datos');
-  } catch (error) {
-    console.error('Error al conectar a la base de datos');
-  }
-})();
 
-export default client;
+try {
+  await db.connect();
+  console.log('Conectado a la base de datos');
+} catch (error) {
+  console.error('Error al conectar a la base de datos');
+}
+
+
+export default db;
