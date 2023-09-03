@@ -34,33 +34,21 @@ async function animeScapper(textSearch) {
         const torrentLinkDownload = await firstTorrentLink.jsonValue();
         const torrentSize = await columns[3].evaluate(node => node.textContent);
         const torrentDate = await columns[4].evaluate(node => node.textContent);
-        
-        /* const torrent = {
-          name: torrentFilename.replace(/\t|\n/g, ''),
-          linkDownload: torrentLinkDownload,
-          size: torrentSize,
-          date: torrentDate
-        }; */
-
         torrent.name = torrentFilename.replace(/\t|\n/g, '')
         torrent.linkDownload = torrentLinkDownload
         torrent.size = torrentSize
         torrent.date = torrentDate
-
-        console.log(torrent);
       }));
     } else {
       console.log('No se encontraron resultados');
     }
-
     return torrent;
-    
   } catch (error) {
     console.error('Error en el scraper:', error);
     throw error;
-  }/*  finally {
+  } finally {
     await browser.close();
-  } */
+  }
 }
 
 export default animeScapper;
