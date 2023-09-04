@@ -1,8 +1,10 @@
 import cron from 'node-cron';
 import { getAnimeToDownload } from './controllers/anime.controller.js';
 import animeScapper from './scrapper.js';
+import downloadTorrent from './utils/downloadTorrent.js';
+import downloadAnime from './utils/downloadAnime.js';
 
-cron.schedule('*/10 * * * *', async () => {
+// cron.schedule('*/10 * * * *', async () => { */
   console.log('Iniciando ejecucion ..');
   try {
     const animeToDownload = await getAnimeToDownload();
@@ -15,9 +17,13 @@ cron.schedule('*/10 * * * *', async () => {
         console.log('Texto a buscar', animeTextSearch);
         const torrentDownload = await animeScapper(animeTextSearch)
         console.log(torrentDownload);
+        const filenameTorrent = `${torrentDownload.name}.torrent`;
+        const linkTorrent = torrentDownload.linkDownload;
+        await downloadTorrent(linkTorrent, filenameTorrent);
+        downloadAnime('C:/Users/User/Downloads', filenameTorrent)
       });
     }
   } catch (error) {
     console.error('Error: ', error)
   }
-});
+/* }); */
