@@ -2,11 +2,12 @@ import { rejects } from 'assert';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { DOWNLOAD_PATH } from '../config';
 
 async function downloadTorrent(urlTorrent, filename) {
   try {
     const response = await axios.get(urlTorrent, {responseType: 'stream'});
-    const destinationPath = path.join('C:/Users/User/Downloads', filename);
+    const destinationPath = path.join(`${DOWNLOAD_PATH}/Torrents`, filename);
 
     console.log('Descargando: ', filename);
 
