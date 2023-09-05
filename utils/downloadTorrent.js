@@ -1,8 +1,7 @@
-import { rejects } from 'assert';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
-import { DOWNLOAD_PATH } from '../config';
+import { DOWNLOAD_PATH } from '../config.js';
 
 async function downloadTorrent(urlTorrent, filename) {
   try {

@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import colors from 'colors';
 
 async function animeScapper(textSearch) {
 
@@ -25,7 +26,7 @@ async function animeScapper(textSearch) {
     const rowsSearch = await tableSearch[0].$$('tr');
 
     if (rowsSearch.length > 0) {
-      console.log('Se encontraron resultados');
+      console.log(colors.green('Se encontraron resultados'));
       await Promise.all(rowsSearch.slice(1).map(async (row) => {
         const columns = await row.$$('td');
         const torrentFilename = await columns[1].evaluate(node => node.textContent);
@@ -40,7 +41,7 @@ async function animeScapper(textSearch) {
         torrent.date = torrentDate
       }));
     } else {
-      console.log('No se encontraron resultados');
+      console.log(colors.red('No se encontraron resultados'));
     }
     return torrent;
   } catch (error) {
