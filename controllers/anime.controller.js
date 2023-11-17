@@ -50,7 +50,6 @@ export const downloadTorrent = async (urlTorrent, filename) => {
     const response = await axios.get(urlTorrent, {responseType: 'stream'});
     const destinationPath = path.join(`${DOWNLOAD_PATH}/Torrents`, filename);
     response.data.pipe(fs.createWriteStream(destinationPath));
-
     return new Promise((resolve, reject) => {
       response.data.on('end', () => {
         console.log(colors.yellow(`Archivo descargado en ${destinationPath}\n`));
@@ -68,7 +67,7 @@ export const downloadTorrent = async (urlTorrent, filename) => {
 export const downloadAnime = async (filenameTorrent, pathToDownload) => {
   try {
     await createFoldersAnime(pathToDownload);
-    process.chdir(`${DOWNLOAD_PATH}/Torrents`);
+    process.chdir(`${DOWNLOAD_PATH}/torrents`);
     console.log(colors.yellow('Ahora trabajando en: ', process.cwd()));
     const comand = `webtorrent "${filenameTorrent}" -o "${pathToDownload}" --download-limit 9437184 --upload-limit 5`;
     exec( comand, { stdio: 'inherit' }, (error, stdout, stderr) => {
@@ -82,5 +81,30 @@ export const downloadAnime = async (filenameTorrent, pathToDownload) => {
     });
   } catch (error) {
     console.error('Error al descargar anime:\n', error);
+  } finally {
+    console.log(colors.green.bold('Anime descargado con exito\n'));
+  }
+}
+
+export const updateChapterAnime = async (id, torrent) => {
+  try {
+    console.log(colors.gray.bold(`\nActualizando estado de capitulo\n`));
+    await updateChapterAnimeDownloaded(id, torrent);
+  } catch (error) {
+    console.error('Error al actualizar estado de capitulo:\n', error);
+  } finally {
+    console.log(colors.green.bold('Capitulo actualizado con exito\n'));
+  }
+}
+
+export const createNewChapter = async (id) => {
+  try {
+    console.log(colors.gray.bold(`\nCreando nuevo capitulo\n`));
+    const newChapter =  await createNewChapterAnime(id);
+    if (newChapter.rowCount !== 0) {
+      console.log(colors.green(`\nCreado con exito nuevo capitulo ${queryResult.chapter.toString().padStart(2, '0')}\n`));
+    }
+  } catch (error) {
+    console.error('Error al crear nuevo capitulo:\n', error);
   }
 }

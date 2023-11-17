@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { animeSearch, animeToDownload, downloadAnime, downloadTorrent } from './controllers/anime.controller.js';
+import { animeSearch, animeToDownload, createNewChapter, downloadAnime, downloadTorrent, updateChapterAnime } from './controllers/anime.controller.js';
 import colors from 'colors';
 import { ANIME_PATH } from './config.js';
 
@@ -19,13 +19,21 @@ cron.schedule('*/10 * * * *', async () => {
           const filenameTorrent = `${torrentDownload.name}.torrent`;
           const linkTorrent = torrentDownload.linkDownload;
           await downloadTorrent(linkTorrent, filenameTorrent);
-          await downloadAnime(filenameTorrent, animePath);
+          await downloadAnime(filenameTorrent, animePath).then( async (result) => {
+            if (result) {
+              await anime.update({downloaded: true});
+            }
+          })
+          if (anime.downloaded === true) {
+            updateChapterAnimeDownloaded(anime.id, torrentDownload);
+            createNewChapter(anime.id);
+          }
         } else {
           console.log(colors.red(`Aun no es la fecha de descarga para ${anime.name} - ${anime.chapter.toString().padStart(2,'0')}`));
         }
       });
     }
   } catch (error) {
-    console.error('Error: ', error)
+    console.error('Error en la ejecucion del cron job:\n', error);
   }
 });

@@ -21,11 +21,9 @@ export const updateChapterAnimeDownloaded = async (id, torrent) => {
       downloaded_at = $4
     WHERE
       id = $5;`;
-    console.log(colors.gray(`Actualizando estado de capitulo`));
     await db.query(query, [torrent.linkDownload, torrent.name, true, new Date(), id]);
-    console.log(colors.green(`Actualizado con exito`));
   } catch (error) {
-    console.error(colors.red('Error al actualizar estado de capitulo'));
+    console.error('Error al actualizar estado de capitulo:\n', error);
   }
 };
 
@@ -40,8 +38,8 @@ export const createNewChapterAnime = async (id) => {
     VALUES ($1, $2, $3)
     RETURNING *;`;
     const queryResult = await db.query(query, [id, chapter, nextChapterDate]);
-    console.log(colors.green(`Creado con exito nuevo capitulo ${queryResult.chapter.toString().padStart(2, '0')}`));
+    return queryResult.rows;
   } catch (error) {
-    console.log(colors.red('Error al crear nuevo capitulo'));
+    console.log(colors.red('Error al crear nuevo capitulo:\n', error));
   }
 }
