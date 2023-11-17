@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-import colors from 'colors';
 
 async function animeScapper(textSearch) {
 

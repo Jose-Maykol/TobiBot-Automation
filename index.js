@@ -1,13 +1,11 @@
 import cron from 'node-cron';
-import { animeSearch, animeToDownload } from './controllers/anime.controller.js';
-import animeScapper from './scrapper.js';
-import downloadTorrent from './utils/downloadTorrent.js';
-import downloadAnime from './utils/downloadAnime.js';
+import { animeSearch, animeToDownload, downloadAnime, downloadTorrent } from './controllers/anime.controller.js';
 import colors from 'colors';
 import { ANIME_PATH } from './config.js';
 
 console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
-// cron.schedule('*/10 * * * *', async () => { */
+
+cron.schedule('*/10 * * * *', async () => {
   try {
     const animes = await animeToDownload();
     const currentDate = new Date();
@@ -20,8 +18,8 @@ console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
           const torrentDownload = await animeSearch(animeTextSearch);
           const filenameTorrent = `${torrentDownload.name}.torrent`;
           const linkTorrent = torrentDownload.linkDownload;
-          //await downloadTorrent(linkTorrent, filenameTorrent);
-          //await downloadAnime(filenameTorrent, animePath);
+          await downloadTorrent(linkTorrent, filenameTorrent);
+          await downloadAnime(filenameTorrent, animePath);
         } else {
           console.log(colors.red(`Aun no es la fecha de descarga para ${anime.name} - ${anime.chapter.toString().padStart(2,'0')}`));
         }
@@ -30,4 +28,4 @@ console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
   } catch (error) {
     console.error('Error: ', error)
   }
-/* }); */
+});
