@@ -1,12 +1,12 @@
 import cron from 'node-cron';
-import { animeToDownload } from './controllers/anime.controller.js';
+import { animeSearch, animeToDownload } from './controllers/anime.controller.js';
 import animeScapper from './scrapper.js';
 import downloadTorrent from './utils/downloadTorrent.js';
 import downloadAnime from './utils/downloadAnime.js';
 import colors from 'colors';
 import { ANIME_PATH } from './config.js';
 
-console.log(colors.green.bold('Iniciando ejecucion de TobiBot'));
+console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
 // cron.schedule('*/10 * * * *', async () => { */
   try {
     const animes = await animeToDownload();
@@ -16,12 +16,8 @@ console.log(colors.green.bold('Iniciando ejecucion de TobiBot'));
         const animePath = `${ANIME_PATH}/${anime.name}`;
         const animeDownloadDate = new Date(anime.download_datetime);
         const animeTextSearch = `${anime.subs_name} ${anime.name} 1080p ${anime.chapter.toString().padStart(2, '0')}`;
-        console.log(colors.green(`Pendiente - ${anime.name}`));
         if (currentDate >= animeDownloadDate ) {
-          console.log(colors.yellow(`Buscando: ${animeTextSearch}`));
-          const torrentDownload = await animeScapper(animeTextSearch);
-          console.log(colors.white(`\b Torrent: ${torrentDownload.name} - ${torrentDownload.size}`));
-          console.log(colors.white(`\b Link: ${torrentDownload.linkDownload}`));
+          const torrentDownload = await animeSearch(animeTextSearch);
           const filenameTorrent = `${torrentDownload.name}.torrent`;
           const linkTorrent = torrentDownload.linkDownload;
           //await downloadTorrent(linkTorrent, filenameTorrent);

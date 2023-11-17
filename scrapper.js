@@ -4,7 +4,7 @@ import colors from 'colors';
 async function animeScapper(textSearch) {
 
   const animePageUrl = 'https://nyaa.si/';
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
+  const browser = await puppeteer.launch({ headless: 'new', defaultViewport: null });
   const page = await browser.newPage();
   let torrent = {
     name: null,    
@@ -26,7 +26,6 @@ async function animeScapper(textSearch) {
     const rowsSearch = await tableSearch[0].$$('tr');
 
     if (rowsSearch.length > 0) {
-      console.log(colors.green('Se encontraron resultados'));
       await Promise.all(rowsSearch.slice(1).map(async (row) => {
         const columns = await row.$$('td');
         const torrentFilename = await columns[1].evaluate(node => node.textContent);
@@ -41,7 +40,7 @@ async function animeScapper(textSearch) {
         torrent.date = torrentDate
       }));
     } else {
-      console.log(colors.red('No se encontraron resultados'));
+      return null;
     }
     return torrent;
   } catch (error) {
