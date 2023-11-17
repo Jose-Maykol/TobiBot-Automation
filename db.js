@@ -12,11 +12,5 @@ const db = new Pool({
   port: process.env.PORT,
   ssl: true,
 });
-/* try {
-  await db.connect();
-  console.log('Conectado a la base de datos');
-} catch (error) {
-  console.error('Error al conectar a la base de datos');
-} */
 
 export default db;
