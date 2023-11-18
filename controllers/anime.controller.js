@@ -8,7 +8,6 @@ import { exec } from 'child_process';
 import process from 'process'
 import { DOWNLOAD_PATH } from '../config.js';
 import createFoldersAnime from '../utils/createFoldersAnime.js';
-import downloadAnime from './../utils/downloadAnime';
 
 export const animeToDownload = async () => {
   try {
@@ -48,7 +47,7 @@ export const downloadTorrent = async (urlTorrent, filename) => {
   try {
     console.log(colors.yellow(`\nDescargando: ${filename}\n`));
     const response = await axios.get(urlTorrent, {responseType: 'stream'});
-    const destinationPath = path.join(`${DOWNLOAD_PATH}/Torrents`, filename);
+    const destinationPath = path.join(`${DOWNLOAD_PATH}/torrents`, filename);
     response.data.pipe(fs.createWriteStream(destinationPath));
     return new Promise((resolve, reject) => {
       response.data.on('end', () => {
@@ -69,8 +68,8 @@ export const downloadAnime = async (filenameTorrent, pathToDownload) => {
     await createFoldersAnime(pathToDownload);
     process.chdir(`${DOWNLOAD_PATH}/torrents`);
     console.log(colors.yellow('Ahora trabajando en: ', process.cwd()));
-    const comand = `webtorrent "${filenameTorrent}" -o "${pathToDownload}" --download-limit 9437184 --upload-limit 5`;
-    exec( comand, { stdio: 'inherit' }, (error, stdout, stderr) => {
+    const comand = `webtorrent "${filenameTorrent}" -o "${pathToDownload}" --download-limit 9437184 --upload-limit 5 --quiet`;
+    await exec( comand, { stdio: 'inherit' }, (error, stdout, stderr) => {
       if (error) {
         console.error('Error en descarga de torrent: ', error.message);
       }
@@ -79,10 +78,9 @@ export const downloadAnime = async (filenameTorrent, pathToDownload) => {
       }
       console.log(colors.bold.green('Descargando:'), stdout);
     });
+    console.log(colors.green.bold('Anime descargado con exito\n'));
   } catch (error) {
     console.error('Error al descargar anime:\n', error);
-  } finally {
-    console.log(colors.green.bold('Anime descargado con exito\n'));
   }
 }
 
