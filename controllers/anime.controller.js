@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { getAnimeToDownload } from "../repositories/anime.repository.js";
+import { createNewChapterAnime, getAnimeToDownload } from "../repositories/anime.repository.js";
 import animeScapper from '../scrapper.js';
 import axios from 'axios';
 import fs from 'fs';

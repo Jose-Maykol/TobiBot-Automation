@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 async function animeScapper(textSearch) {
 
   const animePageUrl = 'https://nyaa.si/';
-  const browser = await puppeteer.launch({ headless: 'new', defaultViewport: null });
+  const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
   const page = await browser.newPage();
   let torrent = {
     name: null,    
@@ -27,6 +27,11 @@ async function animeScapper(textSearch) {
     if (rowsSearch.length > 0) {
       await Promise.all(rowsSearch.slice(1).map(async (row) => {
         const columns = await row.$$('td');
+        const comments = await columns[1].$('a.comments');
+        // Eliminar comentarios
+        if (comments) {
+          await comments.evaluate(comment => comment.remove());
+        }
         const torrentFilename = await columns[1].evaluate(node => node.textContent);
         const torrentLinks = await columns[2].$$('a');
         const firstTorrentLink = await torrentLinks[0].getProperty('href')

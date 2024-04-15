@@ -3,7 +3,7 @@ import colors from 'colors';
 
 export const getAnimeToDownload = async () => {
   try {
-    const result = await db.query('SELECT * FROM chapters_to_download');
+    const result = await db.query('SELECT anime_id AS id, * FROM chapters_to_download');
     return result.rows;
   } catch (error) {
     console.error('Error al obtener capitulos por descargar');
@@ -29,7 +29,7 @@ export const updateChapterAnimeDownloaded = async (id, torrent) => {
 
 export const createNewChapterAnime = async (id) => {
   try {
-    const result = await db.query('SELECT * FROM anime WHERE id = $1', [id]);
+    const result = await db.query('SELECT * FROM animes WHERE id = $1', [id]);
     const anime = result.rows[0];
     const nextChapterDate = new Date(anime.next_chapter_datetime);
     const chapter = anime.current_chapter + 1;
