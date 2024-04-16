@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import { animeSearch, animeToDownload, createNewChapter, downloadAnime, downloadTorrent, updateChapterAnime } from './controllers/anime.controller.js';
 import colors from 'colors';
 import { ANIME_PATH } from './config.js';
+import sanitizeFilename from './utils/sanitizeFilename.js';
 
 console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
 
@@ -16,11 +17,11 @@ console.log(colors.green.bold('\nIniciando ejecucion de TobiBot\n'));
         const animeTextSearch = `${anime.subs_name} ${anime.name} 1080p ${anime.chapter.toString().padStart(2, '0')}`;
         if (currentDate >= animeDownloadDate ) {
           const torrentDownload = await animeSearch(animeTextSearch);
-          const filenameTorrent = `${torrentDownload.name}.torrent`;
+          const filenameTorrent = sanitizeFilename(`${torrentDownload.name}.torrent`);
           const linkTorrent = torrentDownload.linkDownload;
           await downloadTorrent(linkTorrent, filenameTorrent);
-          await downloadAnime(filenameTorrent, animePath);
-          await updateChapterAnime(anime.id, torrentDownload);
+          // await downloadAnime(filenameTorrent, animePath);
+          await updateChapterAnime(anime.chapter_download_id, torrentDownload);
           if (anime.chapter < anime.chapters) {
             await createNewChapter(anime.id);
           }

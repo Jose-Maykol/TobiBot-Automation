@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 async function animeScapper(textSearch) {
 
   const animePageUrl = 'https://nyaa.si/';
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
+  const browser = await puppeteer.launch({ headless: 'new', defaultViewport: null });
   const page = await browser.newPage();
   let torrent = {
     name: null,    
