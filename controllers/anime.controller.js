@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { createNewChapterAnime, getAnimeToDownload } from "../repositories/anime.repository.js";
+import { createNewChapterAnime, getAnimeToDownload, updateChapterAnimeDownloaded } from "../repositories/anime.repository.js";
 import animeScapper from '../scrapper.js';
 import axios from 'axios';
 import fs from 'fs';
@@ -46,7 +46,11 @@ export const animeSearch = async (animeSearchWords) => {
 export const downloadTorrent = async (urlTorrent, filename) => {
   try {
     console.log(colors.yellow(`\nDescargando: ${filename}\n`));
-    const response = await axios.get(urlTorrent, {responseType: 'stream'});
+    const response = await axios.get(urlTorrent, {
+      responseType: 'stream'
+    }).catch((error) => {
+      console.error('Error al descargar torrent:\n', error);
+    });
     const destinationPath = path.join(`${DOWNLOAD_PATH}/torrents`, filename);
     response.data.pipe(fs.createWriteStream(destinationPath));
     return new Promise((resolve, reject) => {
@@ -100,7 +104,7 @@ export const createNewChapter = async (id) => {
     console.log(colors.gray.bold(`\nCreando nuevo capitulo\n`));
     const newChapter =  await createNewChapterAnime(id);
     if (newChapter.rowCount !== 0) {
-      console.log(colors.green(`\nCreado con exito nuevo capitulo ${queryResult.chapter.toString().padStart(2, '0')}\n`));
+      console.log(colors.green(`\nCreado con exito nuevo capitulo ${newChapter[0].chapter.toString().padStart(2, '0')}\n`));
     }
   } catch (error) {
     console.error('Error al crear nuevo capitulo:\n', error);
